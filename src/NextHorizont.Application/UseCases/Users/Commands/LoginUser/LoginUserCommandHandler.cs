@@ -25,7 +25,7 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, LoginUs
 
     public async Task<LoginUserResult> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetByUsernameAsync(request.Username, request.TenantId);
+        var user = await _userRepository.GetByUsernameGlobalAsync(request.Username);
 
         if (user is null || user.IsActive != true)
             throw new UnauthorizedAccessException("Credenciales inválidas o usuario inactivo.");

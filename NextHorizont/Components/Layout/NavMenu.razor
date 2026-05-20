@@ -1,27 +1,51 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">NextHorizont</a>
+@inject NavigationManager NavigationManager
+
+<div class="sidebar @(IsOpen ? "open" : "")">
+    <div class="sidebar-logo">
+        <span style="background: var(--hh-primary); color: white; border-radius: 8px; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; margin-right: 10px;">H</span>
+        HostHive
+    </div>
+    
+    <div class="sidebar-nav">
+        <a class="nav-item @(IsActive("/dashboard") ? "active" : "")" @onclick='() => NavigateTo("/dashboard")'>
+            <span class="nav-icon">📊</span>
+            Dashboard
+        </a>
+        <a class="nav-item @(IsActive("/products") ? "active" : "")" @onclick='() => NavigateTo("/products")'>
+            <span class="nav-icon">🍔</span>
+            Productos
+        </a>
+        <a class="nav-item">
+            <span class="nav-icon">🪑</span>
+            Mesas
+        </a>
+        <a class="nav-item">
+            <span class="nav-icon">🧾</span>
+            Órdenes
+        </a>
     </div>
 </div>
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+@code {
+    [Parameter]
+    public bool IsOpen { get; set; }
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-    </nav>
-</div>
+    [Parameter]
+    public EventCallback<bool> IsOpenChanged { get; set; }
+
+    private bool IsActive(string path)
+    {
+        return NavigationManager.Uri.EndsWith(path, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private void NavigateTo(string path)
+    {
+        NavigationManager.NavigateTo(path);
+        // Cerrar menú en móvil tras navegar
+        if (IsOpen)
+        {
+            IsOpen = false;
+            IsOpenChanged.InvokeAsync(IsOpen);
+        }
+    }
+}

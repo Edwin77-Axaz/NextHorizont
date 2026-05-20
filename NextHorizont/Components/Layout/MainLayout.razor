@@ -1,7 +1,36 @@
 @inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager NavigationManager
 
-<div class="page">
-    <main>
-        @Body
-    </main>
+<div class="layout-container">
+    <AuthorizeView>
+        <Authorized>
+            <!-- Mostrar Nav y Header SOLO si está logueado -->
+            <NavMenu IsOpen="isSidebarOpen" IsOpenChanged="SidebarStateChanged" />
+            
+            <TopHeader OnToggleSidebar="ToggleSidebar" />
+            
+            <main class="main-content">
+                @Body
+            </main>
+        </Authorized>
+        <NotAuthorized>
+            <!-- Si no está logueado, mostrar solo el body (Login screen) -->
+            @Body
+        </NotAuthorized>
+    </AuthorizeView>
 </div>
+
+@code {
+    private bool isSidebarOpen = false;
+
+    private void ToggleSidebar()
+    {
+        isSidebarOpen = !isSidebarOpen;
+    }
+
+    private void SidebarStateChanged(bool isOpen)
+    {
+        isSidebarOpen = isOpen;
+    }
+}

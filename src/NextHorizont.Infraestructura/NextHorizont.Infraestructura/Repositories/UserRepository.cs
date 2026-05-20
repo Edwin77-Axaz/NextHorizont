@@ -28,6 +28,11 @@ public class UserRepository : IUserRepository
         return await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == username && u.TenantId == tenantId);
     }
 
+    public async Task<User?> GetByUsernameGlobalAsync(string username)
+    {
+        return await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
+    }
+
     public async Task<IEnumerable<User>> GetByRoleAsync(Guid roleId, Guid tenantId)
     {
         return await _dbContext.Users.Where(u => u.RoleId == roleId && u.TenantId == tenantId).ToListAsync();

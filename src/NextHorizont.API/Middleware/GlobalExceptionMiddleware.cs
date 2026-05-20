@@ -46,9 +46,9 @@ public class GlobalExceptionMiddleware
                 )
             ),
 
-            UnauthorizedAccessException => (
+            UnauthorizedAccessException unauthEx => (
                 HttpStatusCode.Unauthorized,
-                new ErrorResponse("No Autorizado", "No tienes permisos para realizar esta acción.")
+                new ErrorResponse("No Autorizado", unauthEx.Message)
             ),
 
             KeyNotFoundException notFoundEx => (

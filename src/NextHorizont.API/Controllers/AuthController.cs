@@ -13,8 +13,8 @@ public class AuthController : ApiControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        // En el login se asume que el TenantId viene en el header X-Tenant-Id
-        var command = new LoginUserCommand(request.Username, request.Password, TenantId);
+        // En el login no exigimos el TenantId en el header, lo resolvemos globalmente por usuario
+        var command = new LoginUserCommand(request.Username, request.Password);
         
         var result = await Mediator.Send(command);
 

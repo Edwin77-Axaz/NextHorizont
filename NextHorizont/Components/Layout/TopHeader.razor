@@ -1,0 +1,50 @@
+@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NextHorizont.Services.ApiService ApiService
+@inject AuthenticationStateProvider AuthStateProvider
+
+<div class="top-header">
+    <div style="display: flex; align-items: center;">
+        <button class="hamburger" @onclick="ToggleSidebar">
+            ☰
+        </button>
+        <h2 class="header-title" style="margin-left: 1rem;">@GetTitle()</h2>
+    </div>
+
+    <div class="user-profile">
+        <AuthorizeView>
+            <Authorized>
+                <span style="font-weight: 600; font-size: 0.875rem;">@context.User.Identity?.Name</span>
+                <button class="btn-logout" @onclick="Logout">Cerrar Sesión</button>
+            </Authorized>
+            <NotAuthorized>
+                <span style="font-weight: 600; font-size: 0.875rem; color: var(--hh-text-muted);">No Autenticado</span>
+            </NotAuthorized>
+        </AuthorizeView>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback OnToggleSidebar { get; set; }
+
+    private async Task ToggleSidebar()
+    {
+        await OnToggleSidebar.InvokeAsync();
+    }
+
+    private string GetTitle()
+    {
+        var uri = NavigationManager.Uri.ToLower();
+        if (uri.Contains("/dashboard")) return "Dashboard";
+        if (uri.Contains("/products")) return "Productos";
+        return "HostHive";
+    }
+
+    private async Task Logout()
+    {
+        await ApiService.LogoutAsync();
+        ((NextHorizont.Services.CustomAuthStateProvider)AuthStateProvider).NotifyUserLogout();
+        NavigationManager.NavigateTo("/");
+    }
+}

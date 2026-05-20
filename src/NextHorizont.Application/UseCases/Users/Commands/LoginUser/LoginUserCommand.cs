@@ -5,8 +5,7 @@ namespace NextHorizont.Application.UseCases.Users.Commands.LoginUser;
 
 public record LoginUserCommand(
     string Username,
-    string Password,
-    Guid TenantId
+    string Password
 ) : IRequest<LoginUserResult>;
 
 public record LoginUserResult(

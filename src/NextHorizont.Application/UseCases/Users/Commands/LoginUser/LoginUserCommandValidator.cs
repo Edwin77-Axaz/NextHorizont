@@ -12,7 +12,5 @@ public class LoginUserCommandValidator : AbstractValidator<LoginUserCommand>
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("La contraseña es requerida.");
 
-        RuleFor(x => x.TenantId)
-            .NotEmpty().WithMessage("El TenantId es requerido para el login.");
     }
 }

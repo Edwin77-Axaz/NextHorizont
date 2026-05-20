@@ -1,0 +1,73 @@
+@page "/products"
+@using NextHorizont.Services
+@inject ApiService ApiService
+
+<PageTitle>Productos - HostHive</PageTitle>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h3 style="color: var(--hh-text-muted); font-size: 1rem; font-weight: 600;">Gestión de Productos</h3>
+    <button class="btn-primary" style="width: auto; padding: 0.5rem 1rem;">+ Nuevo Producto</button>
+</div>
+
+@if (isLoading)
+{
+    <p>Cargando productos...</p>
+}
+else if (products == null || !products.Any())
+{
+    <div class="hh-card" style="text-align: center; padding: 3rem;">
+        <span style="font-size: 3rem; margin-bottom: 1rem; display: block;">🍽️</span>
+        <h4 style="margin-bottom: 0.5rem;">No hay productos</h4>
+        <p style="color: var(--hh-text-muted);">Empieza añadiendo tu primer plato al menú.</p>
+    </div>
+}
+else
+{
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+        @foreach (var product in products)
+        {
+            <div class="hh-card">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <h4 style="font-size: 1.125rem; font-weight: bold;">@product.Name</h4>
+                    <span style="font-weight: bold; color: var(--hh-primary);">S/ @product.Price.ToString("0.00")</span>
+                </div>
+                <p style="color: var(--hh-text-muted); font-size: 0.875rem; margin-bottom: 1rem; min-height: 40px;">
+                    @product.Description
+                </p>
+                <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+                    <button style="padding: 0.25rem 0.75rem; border: 1px solid var(--hh-border); background: transparent; border-radius: 4px; cursor: pointer;">Editar</button>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private bool isLoading = true;
+    private List<ProductDto>? products;
+
+    public class ProductDto
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public decimal Price { get; set; }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            isLoading = true;
+            products = await ApiService.GetAsync<List<ProductDto>>("Product");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}
