@@ -1,0 +1,106 @@
+@page "/"
+
+<PageTitle>Login - HostHive</PageTitle>
+
+<div class="bg-blob bg-blob-purple"></div>
+<div class="bg-blob bg-blob-yellow"></div>
+
+<div class="d-flex align-items-center justify-content-center min-vh-100 position-relative" style="overflow: hidden;">
+    <div class="hh-glass p-5 animate-fade-in-up" style="max-width: 420px; width: 100%; margin: 1.5rem;">
+        
+        <div class="text-center mb-5 delay-100 animate-fade-in-up">
+            <!-- Simulación de Logo -->
+            <div style="width: 64px; height: 64px; background: var(--hh-yellow-400); border-radius: 16px; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; transform: rotate(-10deg);">
+                <span style="font-size: 2rem; font-weight: 900; color: var(--hh-purple-900); transform: rotate(10deg);">H</span>
+            </div>
+            <h2 class="fw-bold mb-1" style="color: white; letter-spacing: -0.5px;">HostHive</h2>
+            <p style="color: var(--hh-text-muted);">Bienvenido al futuro de la gestión.</p>
+        </div>
+
+        <EditForm Model="@loginModel" OnValidSubmit="HandleLogin" class="delay-200 animate-fade-in-up">
+            
+            <div class="hh-floating-group">
+                <InputText id="username" @bind-Value="loginModel.Username" class="hh-input" placeholder=" " />
+                <label for="username" class="hh-label">Usuario</label>
+            </div>
+
+            <div class="hh-floating-group mb-4">
+                <InputText type="password" id="password" @bind-Value="loginModel.Password" class="hh-input" placeholder=" " />
+                <label for="password" class="hh-label">Contraseña</label>
+            </div>
+
+            @if (showError)
+            {
+                <div class="alert alert-danger p-2 text-center" style="background: rgba(220, 38, 38, 0.2); border-color: rgba(220, 38, 38, 0.5); color: #fca5a5;">
+                    @errorMessage
+                </div>
+            }
+
+            <button type="submit" class="hh-btn mt-2 position-relative" disabled="@isLoading">
+                @if (isLoading)
+                {
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    <span>Conectando...</span>
+                }
+                else
+                {
+                    <span>Iniciar Sesión</span>
+                }
+            </button>
+            
+        </EditForm>
+
+        <div class="text-center mt-4 delay-300 animate-fade-in-up">
+            <a href="#" class="text-decoration-none" style="color: var(--hh-yellow-400); font-size: 0.9rem;">¿Olvidaste tu contraseña?</a>
+        </div>
+
+    </div>
+</div>
+
+@code {
+    private LoginModel loginModel = new();
+    private bool isLoading = false;
+    private bool showError = false;
+    private string errorMessage = "";
+
+    public class LoginModel
+    {
+        public string Username { get; set; } = "";
+        public string Password { get; set; } = "";
+    }
+
+    private async Task HandleLogin()
+    {
+        isLoading = true;
+        showError = false;
+        StateHasChanged();
+
+        try
+        {
+            // Simular un delay de conexión ultra suave para que se vea la animación
+            await Task.Delay(1200);
+
+            // TODO: Integrar HttpClient a "https://localhost:7025/api/auth/login"
+            // Por ahora comprobaremos la maqueta:
+            if (loginModel.Username == "admin" && loginModel.Password == "admin123")
+            {
+                // Éxito - Redirigir a Dashboard (por hacer)
+            }
+            else
+            {
+                showError = true;
+                errorMessage = "Usuario o contraseña incorrectos.";
+            }
+        }
+        catch (Exception)
+        {
+            showError = true;
+            errorMessage = "No se pudo conectar al servidor.";
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+}

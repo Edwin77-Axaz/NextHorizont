@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/API/">
+    <Project Path="src/NextHorizont.API/NextHorizont.API.csproj" />
+    <Project Path="src/NextHorizont.Application/NextHorizont.Application.csproj" />
+    <Project Path="src/NextHorizont.Domain/NextHorizont.Domain.csproj" />
+    <Project Path="src/NextHorizont.Infraestructura/NextHorizont.Infraestructura/NextHorizont.Infraestructura.csproj" />
+  </Folder>
+  <Project Path="NextHorizont/NextHorizont.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
+</Solution>

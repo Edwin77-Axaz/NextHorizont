@@ -1,0 +1,47 @@
+@NextHorizont_HostAddress = https://localhost:7194
+@AdminUsername = admin
+@AdminPassword = admin123
+
+### 1. Login y Obtener JWT Token
+# @name loginRequest
+POST {{NextHorizont_HostAddress}}/api/auth/login
+Content-Type: application/json
+X-Tenant-Id: {{tenantId}}
+
+{
+  "username": "{{AdminUsername}}",
+  "password": "{{AdminPassword}}"
+}
+
+### 2. Capturar Token en Variable (Si usas la extensión REST Client de VS Code o Visual Studio 2022)
+@token = {{loginRequest.response.body.token}}
+
+### 3. Crear una nueva Ubicación / Mesa (Requiere Token)
+POST {{NextHorizont_HostAddress}}/api/locations
+Content-Type: application/json
+Authorization: Bearer {{token}}
+X-Tenant-Id: {{tenantId}}
+
+{
+  "name": "Mesa 10",
+  "type": "Mesa",
+  "capacity": 4,
+  "areaId": "AQUI_PONES_EL_ID_DEL_AREA"
+}
+
+### 4. Crear un Producto (Requiere Token)
+POST {{NextHorizont_HostAddress}}/api/products
+Content-Type: application/json
+Authorization: Bearer {{token}}
+X-Tenant-Id: {{tenantId}}
+
+{
+  "name": "Hamburguesa Doble Carne",
+  "price": 15.50,
+  "categoryId": "AQUI_PONES_EL_ID_DE_CATEGORIA"
+}
+
+### 5. Consultar Órdenes Activas (Requiere Token)
+GET {{NextHorizont_HostAddress}}/api/orders/active
+Authorization: Bearer {{token}}
+X-Tenant-Id: {{tenantId}}
